@@ -1,0 +1,92 @@
+<html>
+<head>
+<style type="text/css">
+input[type="button"] {
+	width: 20;
+	height: 20;
+}
+
+.lightOn {
+	background-color: white;
+}
+
+.lightOff {
+	background-color: black;
+}
+</style>
+
+<script type="text/javascript">
+[defaultRowSize, defaultColumnSize] = [4, 4];
+
+function generateButtons(rowSize, columnSize) {
+	var rowId, columnId;
+	var buttonObject;
+	for(rowId = 0; rowId < rowSize; rowId++) {
+		for(columnId = 0; columnId < columnSize; columnId++) {
+			buttonObject = document.createElement("input");
+			buttonObject["type"] = "button";
+			buttonObject["id"] = rowId*columnSize + columnId;
+			buttonObject["className"] = "lightOn";
+			buttonObject.addEventListener("click", function(){clickButton(parseInt(this.id))});
+			document.body.appendChild(buttonObject);
+		}
+		document.body.appendChild(document.createElement("br"));
+	}
+}
+
+function deleteButtons(rowSize, columnSize) {
+	for(var i=0; i < rowSize*(1+columnSize); i++)
+		document.body.removeChild(document.body.lastChild);
+}
+
+function clickButton(buttonId) {
+	var adjacentObjectArray = [document.getElementById(buttonId)];
+	var leftId = buttonId - 1;
+	var rightId = buttonId + 1;
+	var upId = buttonId - defaultColumnSize;
+	var downId = buttonId + defaultColumnSize;
+	if((leftId+1)%defaultColumnSize != 0)
+		adjacentObjectArray.push(document.getElementById(leftId));
+	if(rightId%defaultColumnSize != 0)
+		adjacentObjectArray.push(document.getElementById(rightId));
+	if(upId >= 0)
+		adjacentObjectArray.push(document.getElementById(upId));
+	if(downId < defaultRowSize * defaultColumnSize)
+		adjacentObjectArray.push(document.getElementById(downId));
+	for(let adjacentObject of adjacentObjectArray)
+		adjacentObject["className"] = (adjacentObject["className"] == "lightOn") ? "lightOff" : "lightOn";
+}
+
+function randomizeLights() {
+	for(var i=0; i<defaultRowSize*defaultColumnSize; i++)
+		clickButton(Math.floor(Math.random()*defaultRowSize*defaultColumnSize));
+}
+
+function addControls() {
+	document.body.addEventListener("keydown", 
+		function(e) {
+			if(e.key == "=" || e.key == "+") {
+				deleteButtons(defaultRowSize, defaultColumnSize);
+				defaultRowSize++;
+				defaultColumnSize++;
+				generateButtons(defaultRowSize, defaultColumnSize);
+				randomizeLights();
+			}
+			if(e.key == "-") {
+				deleteButtons(defaultRowSize, defaultColumnSize);
+				defaultRowSize--;
+				defaultColumnSize--;
+				generateButtons(defaultRowSize, defaultColumnSize);
+				randomizeLights();
+			}
+			if(e.key == "r" || e.key == "R") randomizeLights();
+		}
+	);
+}
+</script>
+
+</head>
+<body onload="generateButtons(defaultRowSize, defaultColumnSize); randomizeLights(); addControls();">
+
+</body>
+</html>

@@ -7,3 +7,5 @@ One of my first projects exploring dynamicly creating/deleting/controlling DOM e
 
 Use +/- keys to increase/decrease the size!
 For a challenge, press R to randomize the board.
+
+Hosted via GitHub pages: https://benaou.github.io/lights-out/lightsout.html
